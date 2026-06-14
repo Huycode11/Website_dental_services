@@ -1,45 +1,63 @@
 package com.dental.backend.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "services")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class DentalService {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = 200)
+    private String id;
     private String name;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(nullable = false, precision = 15, scale = 2)
-    private BigDecimal price;
-
-    @Column(name = "duration_minutes")
-    @Builder.Default
+    private Double price;
     private Integer durationMinutes = 30;
-
-    @Column(name = "image_url")
     private String imageUrl;
-
-    @Column(nullable = false)
-    @Builder.Default
     private Boolean active = true;
+    private String createdAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+
+    @DynamoDbAttribute("name")
+    public String getName() {
+        return name;
+    }
+
+    @DynamoDbAttribute("description")
+    public String getDescription() {
+        return description;
+    }
+
+    @DynamoDbAttribute("price")
+    public Double getPrice() {
+        return price;
+    }
+
+    @DynamoDbAttribute("duration_minutes")
+    public Integer getDurationMinutes() {
+        return durationMinutes;
+    }
+
+    @DynamoDbAttribute("image_url")
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    @DynamoDbAttribute("active")
+    public Boolean getActive() {
+        return active;
+    }
+
+    @DynamoDbAttribute("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
 }

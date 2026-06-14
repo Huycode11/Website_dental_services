@@ -1,30 +1,78 @@
 package com.dental.backend.repository;
 
 import com.dental.backend.entity.Appointment;
-import com.dental.backend.enums.AppointmentStatus;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbTable;
+import software.amazon.awssdk.enhanced.dynamodb.Key;
+import software.amazon.awssdk.enhanced.dynamodb.TableSchema;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
-public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
+public class AppointmentRepository {
 
-    List<Appointment> findByPatientIdOrderByCreatedAtDesc(Long patientId);
+    private final DynamoDbTable<Appointment> appointmentTable;
 
-    List<Appointment> findByDoctorIdOrderByCreatedAtDesc(Long doctorId);
+    public AppointmentRepository(DynamoDbEnhancedClient enhancedClient) {
+        this.appointmentTable = enhancedClient.table("appointments", TableSchema.fromBean(Appointment.class));
+    }
 
-    List<Appointment> findByStatus(AppointmentStatus status);
+    public void save(Appointment appointment) {
+        appointmentTable.putItem(appointment);
+    }
 
-    @Query("SELECT a FROM Appointment a WHERE a.schedule.workDate = :date ORDER BY a.schedule.startTime")
-    List<Appointment> findByDate(@Param("date") LocalDate date);
+    public Optional<Appointment> findById(String id) {
+        return Optional.ofNullable(appointmentTable.getItem(Key.builder().partitionValue(id).build()));
+    }
 
-    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.status = :status")
-    Long countByStatus(@Param("status") AppointmentStatus status);
+    public List<Appointment> findAll() {
+        return appointmentTable.scan().items().stream().collect(Collectors.toList());
+    }
 
-    @Query("SELECT COUNT(a) FROM Appointment a WHERE YEAR(a.createdAt) = :year AND MONTH(a.createdAt) = :month")
-    Long countByYearAndMonth(@Param("year") int year, @Param("month") int month);
+    public void deleteById(String id) {
+        appointmentTable.deleteItem(Key.builder().partitionValue(id).build());
+    }
+
+    public List<Appointment> findByPatientIdOrderByCreatedAtDesc(String patientId) {
+        return appointmentTable.scan().items().stream()
+                .filter(a -> patientId.equals(a.getPatientId()))
+                .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Appointment> findByDoctorIdOrderByCreatedAtDesc(String doctorId) {
+        return appointmentTable.scan().items().stream()
+                .filter(a -> doctorId.equals(a.getDoctorId()))
+                .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Appointment> findByStatus(String status) {
+        return appointmentTable.scan().items().stream()
+                .filter(a -> status.equals(a.getStatus()))
+                .collect(Collectors.toList());
+    }
+
+    public List<Appointment> findByDate(String date) {
+        // Warning: This requires manual filtering in service since schedule relation is removed
+        return appointmentTable.scan().items().stream().collect(Collectors.toList());
+    }
+
+    public Long countByStatus(String status) {
+        return appointmentTable.scan().items().stream()
+                .filter(a -> status.equals(a.getStatus()))
+                .count();
+    }
+
+    public Long countByYearAndMonth(int year, int month) {
+        String yearStr = String.valueOf(year);
+        String monthStr = month < 10 ? "0" + month : String.valueOf(month);
+        String prefix = yearStr + "-" + monthStr;
+        return appointmentTable.scan().items().stream()
+                .filter(a -> a.getCreatedAt() != null && a.getCreatedAt().startsWith(prefix))
+                .count();
+    }
 }

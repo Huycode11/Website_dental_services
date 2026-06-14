@@ -1,42 +1,57 @@
 package com.dental.backend.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "feedbacks")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class Feedback {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", nullable = false)
-    private DentalService service;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "appointment_id")
-    private Appointment appointment;
-
-    @Column(nullable = false)
-    private Integer rating; // 1-5
-
-    @Column(columnDefinition = "TEXT")
+    private String id;
+    private String patientId;
+    private String serviceId;
+    private String appointmentId;
+    private Integer rating;
     private String comment;
+    private String createdAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+
+    @DynamoDbAttribute("patient_id")
+    public String getPatientId() {
+        return patientId;
+    }
+
+    @DynamoDbAttribute("service_id")
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    @DynamoDbAttribute("appointment_id")
+    public String getAppointmentId() {
+        return appointmentId;
+    }
+
+    @DynamoDbAttribute("rating")
+    public Integer getRating() {
+        return rating;
+    }
+
+    @DynamoDbAttribute("comment")
+    public String getComment() {
+        return comment;
+    }
+
+    @DynamoDbAttribute("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
 }

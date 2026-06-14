@@ -1,0 +1,5 @@
+.env
+Server/.env
+*.env
+Server/target/
+Client/node_modules/

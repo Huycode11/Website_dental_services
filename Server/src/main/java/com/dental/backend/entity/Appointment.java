@@ -1,52 +1,69 @@
 package com.dental.backend.entity;
 
-import com.dental.backend.enums.AppointmentStatus;
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "appointments")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class Appointment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "patient_id", nullable = false)
-    private User patient;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private Doctor doctor;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", nullable = false)
-    private DentalService service;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id", nullable = false)
-    private DoctorSchedule schedule;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    @Builder.Default
-    private AppointmentStatus status = AppointmentStatus.PENDING;
-
-    @Column(columnDefinition = "TEXT")
+    private String id;
+    private String patientId;
+    private String doctorId;
+    private String serviceId;
+    private String scheduleId;
+    private String status = "PENDING";
     private String notes;
-
-    @Column(name = "cancel_reason")
     private String cancelReason;
+    private String createdAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+
+    @DynamoDbAttribute("patient_id")
+    public String getPatientId() {
+        return patientId;
+    }
+
+    @DynamoDbAttribute("doctor_id")
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    @DynamoDbAttribute("service_id")
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    @DynamoDbAttribute("schedule_id")
+    public String getScheduleId() {
+        return scheduleId;
+    }
+
+    @DynamoDbAttribute("status")
+    public String getStatus() {
+        return status;
+    }
+
+    @DynamoDbAttribute("notes")
+    public String getNotes() {
+        return notes;
+    }
+
+    @DynamoDbAttribute("cancel_reason")
+    public String getCancelReason() {
+        return cancelReason;
+    }
+
+    @DynamoDbAttribute("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
 }

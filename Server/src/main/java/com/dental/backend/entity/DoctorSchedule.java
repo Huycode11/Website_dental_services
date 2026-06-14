@@ -1,38 +1,51 @@
 package com.dental.backend.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-
-@Entity
-@Table(name = "doctor_schedules",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"doctor_id", "work_date", "start_time"}))
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class DoctorSchedule {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "doctor_id", nullable = false)
-    private Doctor doctor;
-
-    @Column(name = "work_date", nullable = false)
-    private LocalDate workDate;
-
-    @Column(name = "start_time", nullable = false)
-    private LocalTime startTime;
-
-    @Column(name = "end_time", nullable = false)
-    private LocalTime endTime;
-
-    @Column(name = "is_booked", nullable = false)
-    @Builder.Default
+    private String id;
+    private String doctorId;
+    private String workDate;
+    private String startTime;
+    private String endTime;
     private Boolean isBooked = false;
+
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+
+    @DynamoDbAttribute("doctor_id")
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    @DynamoDbAttribute("work_date")
+    public String getWorkDate() {
+        return workDate;
+    }
+
+    @DynamoDbAttribute("start_time")
+    public String getStartTime() {
+        return startTime;
+    }
+
+    @DynamoDbAttribute("end_time")
+    public String getEndTime() {
+        return endTime;
+    }
+
+    @DynamoDbAttribute("is_booked")
+    public Boolean getIsBooked() {
+        return isBooked;
+    }
 }

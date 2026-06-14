@@ -2,20 +2,7 @@ server:
   port: 8080
 
 spring:
-  datasource:
-    url: jdbc:mysql://${DB_HOST:website-dental-db.cxey2c4cm6x7.ap-southeast-1.rds.amazonaws.com}:${DB_PORT:3306}/${DB_NAME:dental_service_db}?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
-    username: ${DB_USER:admin}
-    password: ${DB_PASSWORD:Dental123456}
-    driver-class-name: com.mysql.cj.jdbc.Driver
 
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        dialect: org.hibernate.dialect.MySQLDialect
 
   servlet:
     multipart:
@@ -24,14 +11,16 @@ spring:
 
 aws:
   credentials:
-    access-key-id: ${AWS_ACCESS_KEY_ID:your-access-key-id}
-    secret-access-key: ${AWS_SECRET_ACCESS_KEY:your-secret-access-key}
-  region: ${AWS_REGION:ap-southeast-1}
+    access-key-id: ${AWS_ACCESS_KEY_ID}
+    secret-access-key: ${AWS_SECRET_ACCESS_KEY}
+  region: ${AWS_REGION}
   s3:
-    bucket-name: ${AWS_S3_BUCKET_NAME:your-s3-bucket-name}
+    bucket-name: ${AWS_S3_BUCKET_NAME}
   ses:
-    sender-email: ${AWS_SES_SENDER_EMAIL:your-verified-ses-email@example.com}
+    sender-email: ${AWS_SES_SENDER_EMAIL}
+  dynamodb:
+    appointments-table: ${AWS_DYNAMODB_APPOINTMENTS_TABLE}
 
 jwt:
-  secret: ${JWT_SECRET:9a6747ae6e7c123456789abcde0123456789abcdef0123456789abcdef0123456789}
+  secret: ${JWT_SECRET}
   expiration: 86400000

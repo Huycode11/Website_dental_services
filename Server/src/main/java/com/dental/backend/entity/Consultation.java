@@ -1,50 +1,75 @@
 package com.dental.backend.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "consultations")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class Consultation {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "customer_name", nullable = false, length = 150)
+    private String id;
     private String customerName;
-
-    @Column(name = "customer_email", nullable = false, length = 100)
     private String customerEmail;
-
-    @Column(name = "customer_phone", length = 20)
     private String customerPhone;
-
-    @Column(nullable = false, columnDefinition = "TEXT")
     private String question;
-
-    @Column(columnDefinition = "TEXT")
     private String reply;
-
-    @Column(name = "replied_at")
-    private LocalDateTime repliedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "replied_by")
-    private User repliedBy;
-
-    @Column(name = "is_replied", nullable = false)
-    @Builder.Default
+    private String repliedAt;
+    private String repliedById;
     private Boolean isReplied = false;
+    private String createdAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+
+    @DynamoDbAttribute("customer_name")
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    @DynamoDbAttribute("customer_email")
+    public String getCustomerEmail() {
+        return customerEmail;
+    }
+
+    @DynamoDbAttribute("customer_phone")
+    public String getCustomerPhone() {
+        return customerPhone;
+    }
+
+    @DynamoDbAttribute("question")
+    public String getQuestion() {
+        return question;
+    }
+
+    @DynamoDbAttribute("reply")
+    public String getReply() {
+        return reply;
+    }
+
+    @DynamoDbAttribute("replied_at")
+    public String getRepliedAt() {
+        return repliedAt;
+    }
+
+    @DynamoDbAttribute("replied_by_id")
+    public String getRepliedById() {
+        return repliedById;
+    }
+
+    @DynamoDbAttribute("is_replied")
+    public Boolean getIsReplied() {
+        return isReplied;
+    }
+
+    @DynamoDbAttribute("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
 }

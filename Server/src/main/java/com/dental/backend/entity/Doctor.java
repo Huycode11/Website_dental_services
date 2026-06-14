@@ -1,44 +1,63 @@
 package com.dental.backend.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "doctors")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class Doctor {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", unique = true)
-    private User user;
-
-    @Column(nullable = false, length = 150)
+    private String id;
+    private String userId;
     private String specialty;
-
-    @Column(columnDefinition = "TEXT")
     private String description;
-
-    @Column(length = 20)
     private String experience;
-
-    @Column(name = "avatar_url")
     private String avatarUrl;
-
-    @Column(nullable = false)
-    @Builder.Default
     private Boolean active = true;
+    private String createdAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
+
+    @DynamoDbAttribute("user_id")
+    public String getUserId() {
+        return userId;
+    }
+
+    @DynamoDbAttribute("specialty")
+    public String getSpecialty() {
+        return specialty;
+    }
+
+    @DynamoDbAttribute("description")
+    public String getDescription() {
+        return description;
+    }
+
+    @DynamoDbAttribute("experience")
+    public String getExperience() {
+        return experience;
+    }
+
+    @DynamoDbAttribute("avatar_url")
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    @DynamoDbAttribute("active")
+    public Boolean getActive() {
+        return active;
+    }
+
+    @DynamoDbAttribute("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
 }

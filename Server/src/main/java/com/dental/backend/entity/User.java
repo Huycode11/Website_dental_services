@@ -1,53 +1,76 @@
 package com.dental.backend.entity;
 
 import com.dental.backend.enums.Role;
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "users")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true, nullable = false, length = 100)
+    private String id;
     private String email;
-
-    @Column(nullable = false)
     private String password;
-
-    @Column(name = "full_name", nullable = false, length = 150)
     private String fullName;
-
-    @Column(length = 20)
     private String phone;
-
-    @Column(name = "avatar_url")
     private String avatarUrl;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
-
-    @Column(nullable = false)
-    @Builder.Default
+    private String role;
     private Boolean active = true;
+    private String createdAt;
+    private String updatedAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @DynamoDbAttribute("email")
+    public String getEmail() {
+        return email;
+    }
+
+    @DynamoDbAttribute("password")
+    public String getPassword() {
+        return password;
+    }
+
+    @DynamoDbAttribute("full_name")
+    public String getFullName() {
+        return fullName;
+    }
+
+    @DynamoDbAttribute("phone")
+    public String getPhone() {
+        return phone;
+    }
+
+    @DynamoDbAttribute("avatar_url")
+    public String getAvatarUrl() {
+        return avatarUrl;
+    }
+
+    @DynamoDbAttribute("role")
+    public String getRole() {
+        return role;
+    }
+
+    @DynamoDbAttribute("active")
+    public Boolean getActive() {
+        return active;
+    }
+
+    @DynamoDbAttribute("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    @DynamoDbAttribute("updated_at")
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
 }

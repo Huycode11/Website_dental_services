@@ -1,68 +1,69 @@
-import { useState, useEffect } from 'react';
+import { User, LogOut } from 'lucide-react';
+import logo from '../../img/Dentivo_logo.png';
 
-export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+interface HeaderProps {
+  token: string | null;
+  onLoginClick: () => void;
+  onLogout: () => void;
+}
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  const handleScrollToSection = (id: string) => {
-    setMobileMenuOpen(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
+export default function Header({ token, onLoginClick, onLogout }: HeaderProps) {
   return (
-    <header className={`navbar-header ${isScrolled ? 'scrolled' : ''}`}>
-      <div className="header-container">
-        <a href="#" className="logo" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>
-          <svg className="logo-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C8.5 2 6.5 4.5 6 7.5C5.5 10.5 7 13 8.5 14.5C10 16 10.5 18 10 20C9.5 22 11 22 12 22C13 22 14.5 22 14 20C13.5 18 14 16 15.5 14.5C17 13 18.5 10.5 18 7.5C17.5 4.5 15.5 2 12 2Z" fill="currentColor"/>
-            <path d="M10 6.5C10 6.5 11 5.5 12 5.5C13 5.5 14 6.5 14 6.5" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
-          </svg>
-          <span className="logo-text">Dental<span className="logo-highlight">Care</span></span>
-        </a>
-
-        {/* Desktop Nav */}
-        <nav className="desktop-nav">
-          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="nav-link">Trang Chủ</a>
-          <a href="#services" onClick={(e) => { e.preventDefault(); handleScrollToSection('services'); }} className="nav-link">Dịch Vụ</a>
-          <a href="#doctors" onClick={(e) => { e.preventDefault(); handleScrollToSection('doctors'); }} className="nav-link">Bác Sĩ</a>
-          <a href="#testimonials" onClick={(e) => { e.preventDefault(); handleScrollToSection('testimonials'); }} className="nav-link">Đánh Giá</a>
-          <a href="#booking" onClick={(e) => { e.preventDefault(); handleScrollToSection('booking'); }} className="btn btn-primary btn-sm btn-booking">Đặt Lịch Hẹn</a>
-        </nav>
-
-        {/* Mobile Toggle */}
-        <button 
-          className={`mobile-menu-toggle ${mobileMenuOpen ? 'open' : ''}`}
-          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
+    <header className="header container">
+      <div className="logo">
+        <img src={logo} alt="Dentivio Logo" />
       </div>
-
-      {/* Mobile Nav */}
-      <div className={`mobile-nav ${mobileMenuOpen ? 'active' : ''}`}>
-        <a href="#" onClick={(e) => { e.preventDefault(); setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="mobile-nav-link">Trang Chủ</a>
-        <a href="#services" onClick={(e) => { e.preventDefault(); handleScrollToSection('services'); }} className="mobile-nav-link">Dịch Vụ</a>
-        <a href="#doctors" onClick={(e) => { e.preventDefault(); handleScrollToSection('doctors'); }} className="mobile-nav-link">Bác Sĩ</a>
-        <a href="#testimonials" onClick={(e) => { e.preventDefault(); handleScrollToSection('testimonials'); }} className="mobile-nav-link">Đánh Giá</a>
-        <a href="#booking" onClick={(e) => { e.preventDefault(); handleScrollToSection('booking'); }} className="btn btn-primary btn-booking-mobile">Đặt Lịch Hẹn</a>
+      <nav className="nav-links">
+        <div className="nav-item">
+          <a href="#home">Home</a>
+        </div>
+        <div className="nav-item">
+          <a href="#about">About</a>
+        </div>
+        <div className="nav-item dropdown">
+          <a href="#services" className="dropdown-toggle">Services <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+          <div className="dropdown-menu">
+            <a href="#our-services">Our Services</a>
+            <a href="#service-details">Service Details</a>
+          </div>
+        </div>
+        <div className="nav-item dropdown">
+          <a href="#doctors" className="dropdown-toggle">Doctors <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+          <div className="dropdown-menu">
+            <a href="#our-doctors">Our Doctors</a>
+            <a href="#doctor-details">Doctor Details</a>
+          </div>
+        </div>
+        <div className="nav-item dropdown">
+          <a href="#pages" className="dropdown-toggle">Pages <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
+          <div className="dropdown-menu">
+            <a href="#appointment">Appointment</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#blog-archive">Blog Archive</a>
+            <a href="#blog-details">Blog Details</a>
+            <a href="#faqs">FAQs</a>
+            <a href="#404">404 Page</a>
+          </div>
+        </div>
+        <div className="nav-item">
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+      
+      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        {token ? (
+          <button className="icon-btn" onClick={onLogout} title="Logout" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary-color)' }}>
+            <LogOut size={24} />
+          </button>
+        ) : (
+          <button className="icon-btn" onClick={onLoginClick} title="Login / Register" style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--primary-color)' }}>
+            <User size={24} />
+          </button>
+        )}
+        <button className="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Book Appointment
+        </button>
       </div>
     </header>
   );

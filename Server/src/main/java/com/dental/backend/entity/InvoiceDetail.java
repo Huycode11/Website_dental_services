@@ -1,37 +1,51 @@
 package com.dental.backend.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.math.BigDecimal;
-
-@Entity
-@Table(name = "invoice_details")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class InvoiceDetail {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "invoice_id", nullable = false)
-    private Invoice invoice;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "service_id", nullable = false)
-    private DentalService service;
-
-    @Column(nullable = false)
-    @Builder.Default
+    private String id;
+    private String invoiceId;
+    private String serviceId;
     private Integer quantity = 1;
+    private Double unitPrice;
+    private Double subtotal;
 
-    @Column(name = "unit_price", nullable = false, precision = 15, scale = 2)
-    private BigDecimal unitPrice;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
 
-    @Column(name = "subtotal", nullable = false, precision = 15, scale = 2)
-    private BigDecimal subtotal;
+    @DynamoDbAttribute("invoice_id")
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    @DynamoDbAttribute("service_id")
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    @DynamoDbAttribute("quantity")
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    @DynamoDbAttribute("unit_price")
+    public Double getUnitPrice() {
+        return unitPrice;
+    }
+
+    @DynamoDbAttribute("subtotal")
+    public Double getSubtotal() {
+        return subtotal;
+    }
 }

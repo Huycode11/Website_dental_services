@@ -1,49 +1,69 @@
 package com.dental.backend.entity;
 
-import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttribute;
 
-import java.time.LocalDateTime;
-
-@Entity
-@Table(name = "blogs")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamoDbBean
 public class Blog {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false, length = 300)
+    private String id;
     private String title;
-
-    @Column(unique = true, nullable = false, length = 350)
     private String slug;
-
-    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String content;
-
-    @Column(name = "thumbnail_url")
     private String thumbnailUrl;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id")
-    private User author;
-
-    @Column(nullable = false)
-    @Builder.Default
+    private String authorId;
     private Boolean published = false;
+    private String createdAt;
+    private String updatedAt;
 
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    @DynamoDbPartitionKey
+    public String getId() {
+        return id;
+    }
 
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @DynamoDbAttribute("title")
+    public String getTitle() {
+        return title;
+    }
+
+    @DynamoDbAttribute("slug")
+    public String getSlug() {
+        return slug;
+    }
+
+    @DynamoDbAttribute("content")
+    public String getContent() {
+        return content;
+    }
+
+    @DynamoDbAttribute("thumbnail_url")
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
+    }
+
+    @DynamoDbAttribute("author_id")
+    public String getAuthorId() {
+        return authorId;
+    }
+
+    @DynamoDbAttribute("published")
+    public Boolean getPublished() {
+        return published;
+    }
+
+    @DynamoDbAttribute("created_at")
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    @DynamoDbAttribute("updated_at")
+    public String getUpdatedAt() {
+        return updatedAt;
+    }
 }
