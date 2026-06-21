@@ -20,6 +20,9 @@ public class Doctor {
     private String avatarUrl;
     private Boolean active = true;
     private String createdAt;
+    private String facebookLink;
+    private String twitterLink;
+    private String linkedinLink;
 
     @DynamoDbPartitionKey
     public String getId() {
@@ -59,5 +62,20 @@ public class Doctor {
     @DynamoDbAttribute("created_at")
     public String getCreatedAt() {
         return createdAt;
+    }
+
+    @DynamoDbAttribute("facebook_link")
+    public String getFacebookLink() {
+        return facebookLink;
+    }
+
+    @DynamoDbAttribute("twitter_link")
+    public String getTwitterLink() {
+        return twitterLink;
+    }
+
+    @DynamoDbAttribute("linkedin_link")
+    public String getLinkedinLink() {
+        return linkedinLink;
     }
 }

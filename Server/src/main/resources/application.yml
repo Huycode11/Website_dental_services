@@ -2,7 +2,19 @@ server:
   port: 8080
 
 spring:
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${spring.mail.username:phamvanhuyhuy2020@gmail.com}
+    password: ${spring.mail.password:aeuipjkcpawuhmry}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: "smtp.gmail.com"
 
   servlet:
     multipart:

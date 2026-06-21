@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header';
 import Footer from './Footer';
+import ScrollToTop from '../ScrollToTop';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,10 +14,11 @@ export default function Layout({ children, token, onLoginClick, onLogout }: Layo
   return (
     <>
       <Header token={token} onLoginClick={onLoginClick} onLogout={onLogout} />
-      <main>
+      <main style={{ paddingTop: '82px' }}>
         {children}
       </main>
       <Footer />
+      <ScrollToTop />
     </>
   );
 }

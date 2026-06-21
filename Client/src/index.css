@@ -17,6 +17,9 @@
   --bg-light: #F7FBF9; /* Light Greenish Gray */
   --bg-dark: #122B42;
   
+  --header-bg: #ffffff;
+  --header-bg-scrolled: rgba(255, 255, 255, 0.97);
+  
   --border-color: #E2E8F0;
   
   --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -31,6 +34,19 @@
   --transition: 0.3s ease-in-out;
 }
 
+[data-theme="dark"] {
+  --bg-main: #111827;
+  --bg-light: #1f2937;
+  --bg-dark: #374151;
+  --header-bg: #111827;
+  --header-bg-scrolled: rgba(17, 24, 39, 0.97);
+  --text-dark: #f9fafb;
+  --text-gray: #d1d5db;
+  --secondary-color: #f9fafb;
+  --border-color: #374151;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.5);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -43,10 +59,25 @@ html {
 
 body {
   font-family: var(--font-secondary);
+  color: var(--text-dark);
   background-color: var(--bg-main);
-  color: var(--text-gray);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+}
+
+input, textarea, select {
+  background-color: transparent;
+  color: var(--text-dark);
+}
+
+/* Fix browser autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px var(--bg-main) inset !important;
+  -webkit-text-fill-color: var(--text-dark) !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 h1, h2, h3, h4, h5, h6 {

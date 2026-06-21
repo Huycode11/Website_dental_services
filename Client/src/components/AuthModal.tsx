@@ -39,8 +39,12 @@ export default function AuthModal({ onClose, onLoginSuccess }: AuthModalProps) {
           onLoginSuccess(res.data.token);
         }
       }
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+      } else {
+        setError('Something went wrong. Please try again.');
+      }
     } finally {
       setLoading(false);
     }

@@ -1,18 +1,22 @@
 package com.dental.backend.dto.request;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
-public class DoctorRequest {
-    @NotNull(message = "Vui lòng chọn tài khoản người dùng")
-    private Long userId;
+public class UpdateDoctorAdminRequest {
+    
+    @NotBlank(message = "Họ tên không được để trống")
+    private String fullName;
+
+    @NotBlank(message = "Số điện thoại không được để trống")
+    private String phone;
 
     @NotBlank(message = "Chuyên khoa không được để trống")
     private String specialty;
 
-    private String description;
     private String experience;
+    private String description;
     private String avatarUrl;
     
     private String facebookLink;

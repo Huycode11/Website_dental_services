@@ -32,6 +32,8 @@ public class DynamoDbTableInitializer {
         createTableIfNotExists("consultations", Consultation.class);
         createTableIfNotExists("blogs", Blog.class);
         createTableIfNotExists("appointments", Appointment.class);
+        createTableIfNotExists("categories", Category.class);
+        createTableIfNotExists("specialties", Specialty.class);
         
         logger.info("DynamoDB tables initialization completed.");
     }

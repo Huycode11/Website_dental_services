@@ -21,6 +21,8 @@ public class User {
     private String avatarUrl;
     private String role;
     private Boolean active = true;
+    private String resetCode;
+    private String resetCodeExpiry;
     private String createdAt;
     private String updatedAt;
 
@@ -72,5 +74,15 @@ public class User {
     @DynamoDbAttribute("updated_at")
     public String getUpdatedAt() {
         return updatedAt;
+    }
+
+    @DynamoDbAttribute("reset_code")
+    public String getResetCode() {
+        return resetCode;
+    }
+
+    @DynamoDbAttribute("reset_code_expiry")
+    public String getResetCodeExpiry() {
+        return resetCodeExpiry;
     }
 }
