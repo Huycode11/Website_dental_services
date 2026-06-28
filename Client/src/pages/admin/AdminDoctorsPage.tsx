@@ -16,6 +16,7 @@ interface AdminDoctor {
   createdAt: string;
   experience?: string;
   description?: string;
+  patientsServed?: number;
 }
 
 export default function AdminDoctorsPage() {
@@ -232,13 +233,11 @@ export default function AdminDoctorsPage() {
                 </div>
 
                 {/* Right Stat Section */}
-                <div style={{ textAlign: 'center', marginLeft: '16px' }}>
-                  <div style={{ color: '#3b82f6', fontWeight: 600, fontSize: '14px', marginBottom: '4px' }}>
-                    120 Patients
+                <div style={{ textAlign: 'center' }}>
+                  <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#3b82f6', marginBottom: '4px' }}>
+                    {doc.patientsServed || 0} Patients
                   </div>
-                  <div style={{ color: '#60a5fa', fontSize: '13px' }}>
-                    Served
-                  </div>
+                  <div style={{ fontSize: '13px', color: '#9ca3af' }}>Served</div>
                 </div>
               </div>
 

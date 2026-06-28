@@ -8,6 +8,7 @@ import com.dental.backend.entity.Doctor;
 import com.dental.backend.entity.User;
 import com.dental.backend.repository.DoctorRepository;
 import com.dental.backend.repository.UserRepository;
+import com.dental.backend.repository.AppointmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,11 +29,15 @@ public class DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final UserRepository userRepository;
+    private final AppointmentRepository appointmentRepository;
     private final S3Presigner s3Presigner;
     private final PasswordEncoder passwordEncoder;
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
+
+    @Value("${aws.cloudfront.domain:}")
+    private String cloudFrontDomain;
 
     public List<DoctorPublicResponse> getAllActiveDoctors() {
         return doctorRepository.findAllActiveWithUser().stream().map(doctor -> {
@@ -79,6 +84,11 @@ public class DoctorService {
                 presignedUrl = generatePresignedUrl(key.isEmpty() ? avatarKey : key);
             }
             
+            long patientsServed = appointmentRepository.findByDoctorIdOrderByCreatedAtDesc(doctor.getId())
+                    .stream()
+                    .filter(a -> "COMPLETED".equalsIgnoreCase(a.getStatus()))
+                    .count();
+
             return AdminDoctorResponse.builder()
                     .id(doctor.getId())
                     .userId(doctor.getUserId())
@@ -95,6 +105,7 @@ public class DoctorService {
                     .role(role)
                     .active(active)
                     .createdAt(doctor.getCreatedAt())
+                    .patientsServed(patientsServed)
                     .build();
         }).collect(Collectors.toList());
     }
@@ -207,6 +218,19 @@ public class DoctorService {
 
     private String generatePresignedUrl(String key) {
         if (key == null || key.isBlank()) return null;
+        if (key.startsWith("http")) return key;
+        
+        if (cloudFrontDomain != null && !cloudFrontDomain.isBlank()) {
+            String domain = cloudFrontDomain.trim();
+            if (!domain.startsWith("http")) {
+                domain = "https://" + domain;
+            }
+            if (domain.endsWith("/")) {
+                domain = domain.substring(0, domain.length() - 1);
+            }
+            return domain + "/" + key;
+        }
+        
         try {
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
                     .signatureDuration(Duration.ofHours(1))

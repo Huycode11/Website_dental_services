@@ -25,4 +25,5 @@ public class AdminDoctorResponse {
     private String role;
     private Boolean active;
     private String createdAt;
+    private long patientsServed;
 }

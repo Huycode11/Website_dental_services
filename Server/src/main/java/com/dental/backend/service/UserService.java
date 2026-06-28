@@ -1,6 +1,8 @@
 package com.dental.backend.service;
 
 import com.dental.backend.dto.request.UpdateProfileRequest;
+import com.dental.backend.dto.request.UpdateUserAdminRequest;
+import com.dental.backend.dto.response.AdminUserResponse;
 import com.dental.backend.dto.response.UserProfileResponse;
 import com.dental.backend.entity.User;
 import com.dental.backend.entity.Doctor;
@@ -21,7 +23,9 @@ import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +38,9 @@ public class UserService {
 
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
+
+    @Value("${aws.cloudfront.domain:}")
+    private String cloudFrontDomain;
 
     public UserProfileResponse getProfile(String email) {
         User user = userRepository.findByEmail(email)
@@ -140,8 +147,22 @@ public class UserService {
     /**
      * Generate a pre-signed URL valid for 1 hour for a given S3 key.
      */
-    private String generatePresignedUrl(String key) {
+    public String generatePresignedUrl(String key) {
         if (key == null || key.isBlank()) return null;
+        if (key.startsWith("http")) return key;
+        
+        // If CloudFront domain is configured, use it instead of generating a pre-signed URL
+        if (cloudFrontDomain != null && !cloudFrontDomain.isBlank()) {
+            String domain = cloudFrontDomain.trim();
+            if (!domain.startsWith("http")) {
+                domain = "https://" + domain;
+            }
+            if (domain.endsWith("/")) {
+                domain = domain.substring(0, domain.length() - 1);
+            }
+            return domain + "/" + key;
+        }
+        
         try {
             GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
                     .signatureDuration(Duration.ofHours(1))
@@ -196,7 +217,7 @@ public class UserService {
      * If the stored value is a full https URL, extract the S3 key from it.
      * If it's already a key (e.g. "avatars/..."), return as-is.
      */
-    private String extractKeyFromS3Key(String value) {
+    public String extractKeyFromS3Key(String value) {
         if (value == null) return "";
         if (value.startsWith("http")) {
             int idx = value.indexOf(".amazonaws.com/");
@@ -204,5 +225,87 @@ public class UserService {
             return value.substring(idx + ".amazonaws.com/".length());
         }
         return value; // already a key
+    }
+
+    // --- Admin User Management Methods ---
+
+    public List<AdminUserResponse> getAllUsersForAdmin() {
+        return userRepository.findAll().stream()
+                .map(this::mapToAdminResponse)
+                .collect(Collectors.toList());
+    }
+
+    public AdminUserResponse updateUserStatusByAdmin(String id, boolean active) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setActive(active);
+        user.setUpdatedAt(Instant.now().toString());
+        userRepository.save(user);
+        
+        // Also update doctor status if they are a doctor
+        if ("DOCTOR".equals(user.getRole()) || "ROLE_DOCTOR".equals(user.getRole())) {
+            doctorRepository.findByUserId(id).ifPresent(doctor -> {
+                doctor.setActive(active);
+                doctorRepository.save(doctor);
+            });
+        }
+        
+        return mapToAdminResponse(user);
+    }
+
+    public AdminUserResponse updateUserByAdmin(String id, UpdateUserAdminRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        if (request.getFullName() != null) user.setFullName(request.getFullName());
+        if (request.getPhone() != null) user.setPhone(request.getPhone());
+        
+        String oldRole = user.getRole();
+        if (request.getRole() != null) {
+            user.setRole(request.getRole());
+            
+            // If changing to DOCTOR and didn't have a doctor profile
+            if (("DOCTOR".equals(request.getRole()) || "ROLE_DOCTOR".equals(request.getRole())) 
+                && !("DOCTOR".equals(oldRole) || "ROLE_DOCTOR".equals(oldRole))) {
+                doctorRepository.findByUserId(user.getId()).orElseGet(() -> {
+                    Doctor newDoc = new Doctor();
+                    newDoc.setId(UUID.randomUUID().toString());
+                    newDoc.setUserId(user.getId());
+                    newDoc.setCreatedAt(Instant.now().toString());
+                    newDoc.setActive(user.getActive() != null ? user.getActive() : true);
+                    doctorRepository.save(newDoc);
+                    return newDoc;
+                });
+            }
+        }
+        
+        user.setUpdatedAt(Instant.now().toString());
+        userRepository.save(user);
+        return mapToAdminResponse(user);
+    }
+
+    public void deleteUser(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+                
+        // If it's a doctor, delete the doctor profile too
+        if ("DOCTOR".equals(user.getRole()) || "ROLE_DOCTOR".equals(user.getRole())) {
+            doctorRepository.findByUserId(id).ifPresent(doc -> doctorRepository.deleteById(doc.getId()));
+        }
+        
+        // Note: we leave appointments orphaned for now, as they represent historical data
+        userRepository.deleteById(id);
+    }
+
+    private AdminUserResponse mapToAdminResponse(User user) {
+        return AdminUserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .phone(user.getPhone())
+                .role(user.getRole())
+                .active(user.getActive())
+                .createdAt(user.getCreatedAt())
+                .build();
     }
 }

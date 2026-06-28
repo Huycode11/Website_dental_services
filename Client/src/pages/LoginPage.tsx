@@ -101,9 +101,9 @@ export default function LoginPage() {
       }
     } catch (err) {
       if (axios.isAxiosError(err)) {
-        setError(err.response?.data?.message || 'Something went wrong. Please try again.');
+        setError(err.response?.data?.message || 'Đã có lỗi xảy ra. Vui lòng thử lại.');
       } else {
-        setError('Something went wrong. Please try again.');
+        setError('Đã có lỗi xảy ra. Vui lòng thử lại.');
       }
     } finally {
       setLoading(false);
@@ -117,8 +117,8 @@ export default function LoginPage() {
           <div className="login-logo-placeholder">
             <Box size={24} color="var(--primary-color)" />
           </div>
-          <h2>{isLogin ? 'Welcome to Dentivo' : 'Create Account'}</h2>
-          <p>{isLogin ? 'Welcome back! Please sign in to your account' : 'Join us today and start your journey'}</p>
+          <h2>{isLogin ? 'Chào mừng đến Dentivo' : 'Tạo tài khoản'}</h2>
+          <p>{isLogin ? 'Mừng bạn trở lại! Vui lòng đăng nhập vào tài khoản' : 'Tham gia cùng chúng tôi hôm nay và bắt đầu hành trình'}</p>
         </div>
 
         {error && <div className="login-error">{error}</div>}
@@ -128,12 +128,12 @@ export default function LoginPage() {
             // LOGIN FORM
             <>
               <div className="input-group">
-                <label>Email Address</label>
+                <label>Địa chỉ Email</label>
                 <div className="input-wrapper">
                   <Mail className="input-icon" size={18} />
                   <input 
                     type="email" 
-                    placeholder="Enter your email" 
+                    placeholder="Nhập email của bạn" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -142,12 +142,12 @@ export default function LoginPage() {
               </div>
 
               <div className="input-group">
-                <label>Password</label>
+                <label>Mật khẩu</label>
                 <div className="input-wrapper">
                   <Lock className="input-icon" size={18} />
                   <input 
                     type={showPassword ? "text" : "password"} 
-                    placeholder="Enter your password" 
+                    placeholder="Nhập mật khẩu" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -163,19 +163,19 @@ export default function LoginPage() {
               </div>
 
               <div className="forgot-password">
-                <button type="button" onClick={() => navigate('/forgot-password')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', cursor: 'pointer', fontSize: '14px', fontWeight: 500, padding: 0 }}>Forgot password?</button>
+                <button type="button" onClick={() => navigate('/forgot-password')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', cursor: 'pointer', fontSize: '14px', fontWeight: 500, padding: 0 }}>Quên mật khẩu?</button>
               </div>
             </>
           ) : (
             // REGISTER FORM
             <div className="register-grid">
               <div className="input-group">
-                <label>Full Name</label>
+                <label>Họ và Tên</label>
                 <div className="input-wrapper">
                   <User className="input-icon" size={18} />
                   <input 
                     type="text" 
-                    placeholder="Enter full name" 
+                    placeholder="Nhập họ và tên" 
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     required
@@ -184,12 +184,12 @@ export default function LoginPage() {
               </div>
 
               <div className="input-group">
-                <label>Email Address</label>
+                <label>Địa chỉ Email</label>
                 <div className="input-wrapper">
                   <Mail className="input-icon" size={18} />
                   <input 
                     type="email" 
-                    placeholder="Enter your email" 
+                    placeholder="Nhập email của bạn" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -198,12 +198,12 @@ export default function LoginPage() {
               </div>
 
               <div className="input-group">
-                <label>Password</label>
+                <label>Mật khẩu</label>
                 <div className="input-wrapper">
                   <Lock className="input-icon" size={18} />
                   <input 
                     type={showPassword ? "text" : "password"} 
-                    placeholder="Enter your password" 
+                    placeholder="Nhập mật khẩu" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -234,12 +234,12 @@ export default function LoginPage() {
               </div>
 
               <div className="input-group">
-                <label>Confirm Password</label>
+                <label>Xác nhận mật khẩu</label>
                 <div className="input-wrapper">
                   <Lock className="input-icon" size={18} />
                   <input 
                     type={showConfirmPassword ? "text" : "password"} 
-                    placeholder="Confirm your password" 
+                    placeholder="Nhập lại mật khẩu" 
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
@@ -265,20 +265,20 @@ export default function LoginPage() {
                 onChange={(e) => setTermsAccepted(e.target.checked)}
               />
               <label htmlFor="terms">
-                I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
+                Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a>
               </label>
             </div>
           )}
 
           <button type="submit" className="login-submit-btn" disabled={loading}>
-            {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+            {loading ? 'Vui lòng đợi...' : (isLogin ? 'Đăng nhập' : 'Tạo tài khoản')}
           </button>
         </form>
 
         <div className="login-footer">
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          {isLogin ? "Chưa có tài khoản? " : "Đã có tài khoản? "}
           <button type="button" className="toggle-auth-mode" onClick={() => setIsLogin(!isLogin)}>
-            {isLogin ? 'Register now' : 'Sign in'}
+            {isLogin ? 'Đăng ký ngay' : 'Đăng nhập'}
           </button>
         </div>
       </div>

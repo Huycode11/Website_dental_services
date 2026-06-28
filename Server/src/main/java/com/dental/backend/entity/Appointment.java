@@ -13,10 +13,14 @@ import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbAttri
 public class Appointment {
 
     private String id;
+    private String clinicId;
     private String patientId;
     private String doctorId;
     private String serviceId;
     private String scheduleId;
+    private String appointmentDate;
+    private String startTime;
+    private String endTime;
     private String status = "PENDING";
     private String notes;
     private String cancelReason;
@@ -25,6 +29,11 @@ public class Appointment {
     @DynamoDbPartitionKey
     public String getId() {
         return id;
+    }
+
+    @DynamoDbAttribute("clinic_id")
+    public String getClinicId() {
+        return clinicId;
     }
 
     @DynamoDbAttribute("patient_id")
@@ -45,6 +54,21 @@ public class Appointment {
     @DynamoDbAttribute("schedule_id")
     public String getScheduleId() {
         return scheduleId;
+    }
+
+    @DynamoDbAttribute("appointment_date")
+    public String getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    @DynamoDbAttribute("start_time")
+    public String getStartTime() {
+        return startTime;
+    }
+
+    @DynamoDbAttribute("end_time")
+    public String getEndTime() {
+        return endTime;
     }
 
     @DynamoDbAttribute("status")

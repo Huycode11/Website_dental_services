@@ -6,14 +6,15 @@ import ScrollToTop from '../ScrollToTop';
 interface LayoutProps {
   children: React.ReactNode;
   token: string | null;
-  onLoginClick: () => void;
+  onLoginClick?: () => void;
   onLogout: () => void;
+  minimalHeader?: boolean;
 }
 
-export default function Layout({ children, token, onLoginClick, onLogout }: LayoutProps) {
+export default function Layout({ children, token, onLoginClick, onLogout, minimalHeader = false }: LayoutProps) {
   return (
     <>
-      <Header token={token} onLoginClick={onLoginClick} onLogout={onLogout} />
+      <Header token={token} onLoginClick={onLoginClick} onLogout={onLogout} minimal={minimalHeader} />
       <main style={{ paddingTop: '82px' }}>
         {children}
       </main>

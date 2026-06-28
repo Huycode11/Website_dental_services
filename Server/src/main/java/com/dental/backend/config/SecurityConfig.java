@@ -55,13 +55,18 @@ public class SecurityConfig {
                 // Public endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/doctors/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/specialties/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/services/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/blogs/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/clinics/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/feedbacks/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/consultations").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/appointments").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 // Admin endpoints
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // Doctor endpoints
+                .requestMatchers("/api/doctor/**").hasRole("DOCTOR")
                 // Authenticated user endpoints
                 .anyRequest().authenticated()
             )

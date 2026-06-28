@@ -36,6 +36,9 @@ public class DentalServiceService {
     @Value("${aws.s3.bucket-name}")
     private String bucketName;
 
+    @Value("${aws.cloudfront.domain:}")
+    private String cloudFrontDomain;
+
     public List<DentalServiceResponse> getAllServices() {
         return dentalServiceRepository.findAll().stream()
                 .map(this::mapToResponse)
@@ -162,16 +165,27 @@ public class DentalServiceService {
     private DentalServiceResponse mapToResponse(DentalService service) {
         String presignedUrl = service.getImageUrl();
         if (presignedUrl != null && !presignedUrl.isBlank() && !presignedUrl.startsWith("http")) {
-            try {
-                GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
-                        .signatureDuration(Duration.ofHours(1))
-                        .getObjectRequest(GetObjectRequest.builder()
-                                .bucket(bucketName)
-                                .key(presignedUrl)
-                                .build())
-                        .build();
-                presignedUrl = s3Presigner.presignGetObject(presignRequest).url().toString();
-            } catch (Exception ignored) {}
+            if (cloudFrontDomain != null && !cloudFrontDomain.isBlank()) {
+                String domain = cloudFrontDomain.trim();
+                if (!domain.startsWith("http")) {
+                    domain = "https://" + domain;
+                }
+                if (domain.endsWith("/")) {
+                    domain = domain.substring(0, domain.length() - 1);
+                }
+                presignedUrl = domain + "/" + presignedUrl;
+            } else {
+                try {
+                    GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                            .signatureDuration(Duration.ofHours(1))
+                            .getObjectRequest(GetObjectRequest.builder()
+                                    .bucket(bucketName)
+                                    .key(presignedUrl)
+                                    .build())
+                            .build();
+                    presignedUrl = s3Presigner.presignGetObject(presignRequest).url().toString();
+                } catch (Exception ignored) {}
+            }
         }
 
         return DentalServiceResponse.builder()

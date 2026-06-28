@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import '../index.css';
 import '../App.css';
@@ -34,6 +35,7 @@ export default function Home() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
   const [doctors, setDoctors] = useState<any[]>([]);
+  const navigate = useNavigate();
   
   const heroImages = [hero1, hero2];
 
@@ -72,7 +74,7 @@ export default function Home() {
         <div className="container hero-title-container">
           <Reveal delay={0}>
             <div className="hero-title-row">
-              <span>Maintain</span>
+              <span>Duy trì</span>
               <div className="hero-image-wrapper">
                 {heroImages.map((img, index) => (
                   <img 
@@ -89,7 +91,7 @@ export default function Home() {
 
           <Reveal delay={100}>
             <div className="hero-title-row">
-              <span>That Wonderful</span>
+              <span>Nụ cười tuyệt đẹp</span>
             </div>
           </Reveal>
 
@@ -98,20 +100,20 @@ export default function Home() {
               <div className="hero-image-wrapper large">
                 <img src={weTreatment} alt="Smile" className="hero-img-transition active" />
               </div>
-              <span>Clean Smile</span>
+              <span>Trắng sáng rạng rỡ</span>
             </div>
           </Reveal>
           
           <Reveal delay={300}>
             <p className="hero-desc text-center">
-              We understand that visiting the dentist can feel overwhelming, so we focus on gentle care, clear communication, and a comfortable experience at every visit, ensuring you feel safe and confident.
+              Chúng tôi hiểu rằng việc đến nha khoa có thể khiến bạn lo lắng. Vì vậy, chúng tôi tập trung vào sự chăm sóc nhẹ nhàng, giao tiếp rõ ràng và mang lại trải nghiệm thoải mái trong mỗi lần khám.
             </p>
           </Reveal>
           
           <Reveal delay={400}>
-            <button className="btn btn-primary">
+            <button className="btn btn-primary" onClick={() => navigate('/booking')}>
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 4H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"></path><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-              Book Appointment
+              Đặt lịch hẹn
             </button>
           </Reveal>
         </div>
@@ -122,8 +124,8 @@ export default function Home() {
         <div className="container">
           <Reveal>
             <div className="text-center">
-              <h2 className="section-title">Services We Offer</h2>
-              <p className="hero-desc">We provide a complete range of dental treatments designed to protect, restore, and enhance your smile with comfort and care.</p>
+              <h2 className="section-title">Dịch vụ của chúng tôi</h2>
+              <p className="hero-desc">Chúng tôi cung cấp đầy đủ các phương pháp điều trị nha khoa nhằm bảo vệ, phục hồi và nâng tầm nụ cười của bạn một cách thoải mái nhất.</p>
             </div>
           </Reveal>
           
@@ -131,33 +133,33 @@ export default function Home() {
             <Reveal delay={0}>
               <div className="service-card">
                 <div className="service-icon"><img src={iconWhitening} alt="Teeth Whitening" /></div>
-                <h3>Teeth Whitening</h3>
-                <p>Illuminate your smile with our Teeth Whitening service at Dentivo Dental Hospital. Experience professional care and regain confidence with a brighter, whiter, and healthier smile in just one session. Unveil a radiant, picture-perfect grin today!</p>
-                <a href="#" className="read-more">Read More &rarr;</a>
+                <h3>Tẩy trắng răng</h3>
+                <p>Làm bừng sáng nụ cười với dịch vụ Tẩy trắng răng tại Dentivo. Trải nghiệm sự chăm sóc chuyên nghiệp và lấy lại tự tin với nụ cười trắng sáng rạng rỡ chỉ sau một liệu trình.</p>
+                <a href="#" className="read-more">Xem thêm &rarr;</a>
               </div>
             </Reveal>
             <Reveal delay={100}>
               <div className="service-card">
                 <div className="service-icon"><img src={iconRootCanal} alt="Root Canal" /></div>
-                <h3>Root Canal</h3>
-                <p>Revitalize your oral health with precision and care. Dentivo Dental Hospital offers advanced Root Canal services, eliminating discomfort and preserving your natural smile. Trust our experts for a pain-free journey to a healthier, happier mouth.</p>
-                <a href="#" className="read-more">Read More &rarr;</a>
+                <h3>Chữa tủy răng</h3>
+                <p>Phục hồi sức khỏe răng miệng với độ chính xác cao. Dịch vụ Chữa tủy răng tiên tiến giúp loại bỏ cơn đau và bảo tồn răng thật của bạn một cách tối đa.</p>
+                <a href="#" className="read-more">Xem thêm &rarr;</a>
               </div>
             </Reveal>
             <Reveal delay={200}>
               <div className="service-card">
                 <div className="service-icon"><img src={iconSurgery} alt="Dental Surgery" /></div>
-                <h3>Dental Surgery</h3>
-                <p>Transforming Smiles, Restoring Confidence. Dentivo Dental Hospital excels in advanced Dental Surgery. Our skilled surgeons prioritize precision and patient comfort for a seamless experience. Trust us for expert care, ensuring your oral well-being through every step of your surgical journey.</p>
-                <a href="#" className="read-more">Read More &rarr;</a>
+                <h3>Phẫu thuật nha khoa</h3>
+                <p>Thực hiện các ca phẫu thuật phức tạp như nhổ răng khôn, ghép xương với đội ngũ bác sĩ chuyên khoa. Đảm bảo an toàn, không đau và nhanh hồi phục.</p>
+                <a href="#" className="read-more">Xem thêm &rarr;</a>
               </div>
             </Reveal>
             <Reveal delay={300}>
               <div className="service-card">
                 <div className="service-icon"><img src={iconGum} alt="Gum Treatment" /></div>
-                <h3>Gum Treatment</h3>
-                <p>Elevate your oral wellness with Dentivo Dental Hospital's Gum Treatment. Our specialized care focuses on gum health, offering personalized solutions to combat issues like gingivitis or periodontitis. Rediscover a confident, healthy smile with our expert gum care tailored just for you.</p>
-                <a href="#" className="read-more">Read More &rarr;</a>
+                <h3>Điều trị nướu</h3>
+                <p>Chăm sóc chuyên sâu các bệnh lý về nướu như viêm nướu, viêm nha chu. Mang lại cho bạn nền tảng răng miệng vững chắc và nụ cười khỏe mạnh.</p>
+                <a href="#" className="read-more">Xem thêm &rarr;</a>
               </div>
             </Reveal>
           </div>
@@ -178,27 +180,27 @@ export default function Home() {
           </Reveal>
           <Reveal direction="right">
             <div>
-              <h2 className="section-title">This is where healthy smiles in Dentivo begin</h2>
-              <p>At Dentivo Dental Clinic, we are more than dental care providers – we are dedicated to protecting and enhancing your smile. With precision, technology, and compassionate care, our team delivers treatment you can trust.</p>
+              <h2 className="section-title">Nơi nụ cười khỏe mạnh bắt đầu</h2>
+              <p>Tại Nha khoa Dentivo, chúng tôi không chỉ là những người cung cấp dịch vụ – chúng tôi tận tâm bảo vệ và hoàn thiện nụ cười của bạn. Với kỹ thuật hiện đại và sự tận tình, chúng tôi mang đến hiệu quả mà bạn có thể tin tưởng.</p>
               <br/>
-              <p>With a passion for precision and compassionate care, our team transforms dental experiences. Trust us for excellence and a brighter, healthier you.</p>
+              <p>Đội ngũ của chúng tôi luôn nỗ lực thay đổi trải nghiệm nha khoa trở nên nhẹ nhàng hơn. Hãy tin tưởng để chúng tôi giúp bạn tỏa sáng.</p>
               
               <div className="feature-list">
                 <div className="feature-item">
                   <svg className="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  Gentle, pain-aware treatment approach
+                  Phương pháp điều trị nhẹ nhàng, không đau
                 </div>
                 <div className="feature-item">
                   <svg className="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  Experienced and certified dental specialists
+                  Đội ngũ bác sĩ chuyên khoa giàu kinh nghiệm
                 </div>
                 <div className="feature-item">
                   <svg className="feature-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                  Comfortable, patient-focused environment
+                  Không gian thoải mái, lấy khách hàng làm trung tâm
                 </div>
               </div>
               
-              <button className="btn btn-primary">More about us &rarr;</button>
+              <button className="btn btn-primary">Về chúng tôi &rarr;</button>
             </div>
           </Reveal>
         </div>
@@ -207,10 +209,10 @@ export default function Home() {
       {/* Stats — Count Up */}
       <section className="container">
         <div className="stats-grid">
-          <StatCounter value={12} suffix="k+" label="Happy Patients" delay={0} />
-          <StatCounter value={16} suffix="+" label="Years Trusted Care" delay={100} />
-          <StatCounter value={45} suffix="+" label="Certified Dentists" delay={200} />
-          <StatCounter value={48} suffix="+" label="Award Winning" delay={300} />
+          <StatCounter value={12} suffix="k+" label="Khách hàng hài lòng" delay={0} />
+          <StatCounter value={16} suffix="+" label="Năm kinh nghiệm" delay={100} />
+          <StatCounter value={45} suffix="+" label="Bác sĩ chuyên khoa" delay={200} />
+          <StatCounter value={48} suffix="+" label="Giải thưởng" delay={300} />
         </div>
       </section>
 
@@ -219,19 +221,19 @@ export default function Home() {
         <div className="why-grid">
           <Reveal direction="left">
             <div>
-              <h2 className="section-title">Why Choose Dentivo?</h2>
+              <h2 className="section-title">Tại sao chọn Dentivo?</h2>
               <div className="why-list">
                 <div className="why-item">
-                  <h4><span>01/</span> Personalised Service</h4>
-                  <p>Experience tailored care that revolves around your unique needs. Our dedicated team ensures your dental journey is crafted with precision, addressing your individual concerns for a truly personalized and comforting experience.</p>
+                  <h4><span>01/</span> Dịch vụ cá nhân hóa</h4>
+                  <p>Trải nghiệm quá trình chăm sóc được thiết kế riêng biệt theo tình trạng răng miệng và nhu cầu cụ thể của từng khách hàng.</p>
                 </div>
                 <div className="why-item">
-                  <h4><span>02/</span> Certified Dentists & Specialists</h4>
-                  <p>Entrust your oral health to a team of highly skilled nurses and staff. With expertise and compassion, they provide a foundation of care, ensuring your well-being and comfort throughout your visit to Dentivo Dental Hospital.</p>
+                  <h4><span>02/</span> Đội ngũ Bác sĩ chuyên môn cao</h4>
+                  <p>An tâm trao gửi nụ cười cho đội ngũ bác sĩ chuyên khoa giỏi, được đào tạo bài bản và luôn cập nhật công nghệ điều trị mới nhất.</p>
                 </div>
                 <div className="why-item">
-                  <h4><span>03/</span> Emergency Dental Support</h4>
-                  <p>Your well-being is our priority, and we're here for you around the clock. Access expert guidance and support anytime, ensuring peace of mind and immediate assistance for your dental concerns, day or night.</p>
+                  <h4><span>03/</span> Hỗ trợ nha khoa 24/7</h4>
+                  <p>Sức khỏe của bạn là ưu tiên hàng đầu. Chúng tôi luôn sẵn sàng hỗ trợ giải đáp mọi vấn đề về răng miệng của bạn bất cứ lúc nào.</p>
                 </div>
               </div>
             </div>
@@ -240,25 +242,25 @@ export default function Home() {
             <div className="why-img-box">
               <img src={whyChoose} alt="Patient Care" className="why-img" />
               <div className="floating-card">
-                <h4>Available Doctors</h4>
-                <p style={{fontSize: '12px', color: 'var(--text-gray)'}}>Select doctors</p>
+                <h4>Bác sĩ đang trực</h4>
+                <p style={{fontSize: '12px', color: 'var(--text-gray)'}}>Danh sách bác sĩ</p>
                 <div className="doc-list">
                   <div className="doc-mini">
                     <img src={doctor2} alt="Dr. William Stanh" />
                     <div>
                       <h5>Dr. William Stanh</h5>
-                      <p>General Dentist</p>
+                      <p>Nha sĩ tổng quát</p>
                     </div>
                   </div>
                   <div className="doc-mini">
                     <img src={doctor3} alt="Dr. Julia Smith" />
                     <div>
                       <h5>Dr. Julia Smith</h5>
-                      <p>Pediatric Dentist</p>
+                      <p>Nha sĩ Nhi khoa</p>
                     </div>
                   </div>
                 </div>
-                <button className="btn btn-outline" style={{width: '100%', padding: '8px', fontSize: '14px'}}>Book Appointment &rarr;</button>
+                <button className="btn btn-outline" style={{width: '100%', padding: '8px', fontSize: '14px'}} onClick={() => navigate('/booking')}>Đặt lịch hẹn &rarr;</button>
               </div>
             </div>
           </Reveal>
@@ -269,8 +271,8 @@ export default function Home() {
       <section className="doctors-section section-padding" id="doctors">
         <div className="container text-center">
           <Reveal>
-            <h2 className="section-title">Meet Our Specialists</h2>
-            <p className="hero-desc">Meet our specialists and learn who will care for your smile. Gentle treatment, clear guidance, and trusted results every time.</p>
+            <h2 className="section-title">Đội ngũ Chuyên gia</h2>
+            <p className="hero-desc">Gặp gỡ những chuyên gia sẽ trực tiếp chăm sóc nụ cười của bạn. Điều trị nhẹ nhàng, hướng dẫn tận tình và kết quả đáng tin cậy.</p>
           </Reveal>
           
           <div className="doctors-grid">
@@ -290,13 +292,13 @@ export default function Home() {
                 </div>
               </Reveal>
             )) : (
-              <p>No doctors found.</p>
+              <p>Không tìm thấy bác sĩ.</p>
             )}
           </div>
           
           <Reveal delay={400}>
             <div style={{marginTop: '40px'}}>
-              <button className="btn btn-primary">See All Doctors &rarr;</button>
+              <button className="btn btn-primary">Xem tất cả bác sĩ &rarr;</button>
             </div>
           </Reveal>
         </div>
@@ -307,8 +309,8 @@ export default function Home() {
         <div className="why-grid" style={{alignItems: 'center'}}>
           <Reveal direction="left">
             <div>
-              <h2 className="section-title">We Treat You in the<br/>Most Comfortable Way</h2>
-              <p style={{marginBottom: '30px'}}>Comfortable Dentistry, Compassionate Care. At Dentivo, your well-being is our focus, ensuring a comfortable and effective journey to a healthier smile.</p>
+              <h2 className="section-title">Điều trị bằng phương pháp<br/>thoải mái nhất</h2>
+              <p style={{marginBottom: '30px'}}>Tại Dentivo, trải nghiệm của bạn luôn được chú trọng nhằm mang lại hiệu quả điều trị cao mà không gây khó chịu hay đau đớn.</p>
               <img src={weTreatment} alt="Comfortable Care" style={{borderRadius: 'var(--radius-md)', width: '100%'}} />
             </div>
           </Reveal>
@@ -316,7 +318,7 @@ export default function Home() {
             <div className="comfort-features">
               <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '20px'}}>
                 <div></div>
-                <button className="btn btn-primary">Book Appointment</button>
+                <button className="btn btn-primary" onClick={() => navigate('/booking')}>Đặt lịch hẹn</button>
               </div>
               
               <div className="comfort-box">
@@ -324,8 +326,8 @@ export default function Home() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 </div>
                 <div>
-                  <h4 style={{marginBottom: '8px'}}>Expert Team, Personalized Care</h4>
-                  <p style={{fontSize: '14px'}}>Personalized treatment plans tailored to your needs and long-term oral health goals.</p>
+                  <h4 style={{marginBottom: '8px'}}>Đội ngũ chuyên gia, Chăm sóc tận tâm</h4>
+                  <p style={{fontSize: '14px'}}>Phác đồ điều trị được cá nhân hóa nhằm hướng tới sức khỏe răng miệng lâu dài.</p>
                 </div>
               </div>
               
@@ -334,8 +336,8 @@ export default function Home() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg>
                 </div>
                 <div>
-                  <h4 style={{marginBottom: '8px'}}>Patient-Centric Approach</h4>
-                  <p style={{fontSize: '14px'}}>More than a patient, you're valued. Our personalized care fosters trust.</p>
+                  <h4 style={{marginBottom: '8px'}}>Lấy khách hàng làm trung tâm</h4>
+                  <p style={{fontSize: '14px'}}>Không chỉ là khách hàng, bạn là một người bạn được chúng tôi trân trọng.</p>
                 </div>
               </div>
               
@@ -344,8 +346,8 @@ export default function Home() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"></polygon><line x1="12" y1="22" x2="12" y2="15.5"></line><polyline points="22 8.5 12 15.5 2 8.5"></polyline><polyline points="2 15.5 12 8.5 22 15.5"></polyline><line x1="12" y1="2" x2="12" y2="8.5"></line></svg>
                 </div>
                 <div>
-                  <h4 style={{marginBottom: '8px'}}>Comprehensive Services</h4>
-                  <p style={{fontSize: '14px'}}>Your all-in-one dental destination. We meet every oral health need under our roof.</p>
+                  <h4 style={{marginBottom: '8px'}}>Dịch vụ toàn diện</h4>
+                  <p style={{fontSize: '14px'}}>Cung cấp đầy đủ mọi giải pháp nha khoa đáp ứng mọi nhu cầu của bạn.</p>
                 </div>
               </div>
             </div>
@@ -357,8 +359,8 @@ export default function Home() {
       <section className="testi-section section-padding">
         <div className="container text-center">
           <Reveal>
-            <h2 className="section-title">Patients Feedback</h2>
-            <p className="hero-desc">Discover what our patients have to say about their experience at Dentivo Dental Clinic. Read genuine testimonials highlighting the comfort, care, and results they received.</p>
+            <h2 className="section-title">Đánh giá từ khách hàng</h2>
+            <p className="hero-desc">Lắng nghe những cảm nhận thực tế của khách hàng về trải nghiệm, sự chăm sóc và kết quả điều trị tại Nha khoa Dentivo.</p>
           </Reveal>
           
           <div className="testi-grid" style={{textAlign: 'left'}}>
@@ -369,7 +371,7 @@ export default function Home() {
                   <img src={test1} alt="Sophia M." />
                   <div>
                     <h4 style={{marginBottom: '4px'}}>Sophia M.</h4>
-                    <span style={{fontSize: '14px', color: 'var(--primary-color)'}}>Regular Patient</span>
+                    <span style={{fontSize: '14px', color: 'var(--primary-color)'}}>Khách hàng thân thiết</span>
                   </div>
                 </div>
               </div>
@@ -381,7 +383,7 @@ export default function Home() {
                   <img src={test2} alt="Daniel R." />
                   <div>
                     <h4 style={{marginBottom: '4px'}}>Daniel R.</h4>
-                    <span style={{fontSize: '14px', color: 'var(--primary-color)'}}>Regular Patient</span>
+                    <span style={{fontSize: '14px', color: 'var(--primary-color)'}}>Khách hàng thân thiết</span>
                   </div>
                 </div>
               </div>
@@ -393,25 +395,25 @@ export default function Home() {
       {/* News & Articles */}
       <section className="section-padding container text-center">
         <Reveal>
-          <h2 className="section-title">News & Articles</h2>
-          <p className="hero-desc">Stay informed with the latest dental insights and tips at Dentivo Dental Hospital. Your key to a healthier, brighter smile.</p>
+          <h2 className="section-title">Tin tức & Bài viết</h2>
+          <p className="hero-desc">Cập nhật những kiến thức và mẹo chăm sóc răng miệng mới nhất từ chuyên gia.</p>
         </Reveal>
         
         <div className="news-grid" style={{textAlign: 'left'}}>
           <Reveal delay={0}>
             <div className="news-card">
               <img src={blog2} alt="Blog post" />
-              <span className="news-date">February 24, 2026</span>
-              <h3>How to Prevent Gum Disease Before It Becomes a Serious Problem</h3>
-              <a href="#" className="read-more">Read More &rarr;</a>
+              <span className="news-date">24 Tháng 2, 2026</span>
+              <h3>Bí quyết ngăn ngừa các bệnh lý về nướu</h3>
+              <a href="#" className="read-more">Xem thêm &rarr;</a>
             </div>
           </Reveal>
           <Reveal delay={150}>
             <div className="news-card">
               <img src={blog3} alt="Blog post" />
-              <span className="news-date">February 24, 2026</span>
-              <h3>Dental Crowns Explained: When and Why You Might Need One</h3>
-              <a href="#" className="read-more">Read More &rarr;</a>
+              <span className="news-date">24 Tháng 2, 2026</span>
+              <h3>Mão răng sứ: Khi nào bạn thực sự cần đến nó?</h3>
+              <a href="#" className="read-more">Xem thêm &rarr;</a>
             </div>
           </Reveal>
         </div>
@@ -422,9 +424,9 @@ export default function Home() {
         <section className="cta-section">
           <div className="container">
             <div className="cta-content">
-              <h2 className="section-title">Are You Having Issues With Your Teeth?</h2>
-              <p style={{marginBottom: '30px'}}>Get relief from tooth pain, sensitivity, or gum discomfort. Our dental team provides clear guidance and comfortable treatment options.</p>
-              <button className="btn btn-primary">Contact us now &rarr;</button>
+              <h2 className="section-title">Bạn đang gặp vấn đề về răng miệng?</h2>
+              <p style={{marginBottom: '30px'}}>Hãy để chúng tôi giải quyết triệt để cơn đau nhức, ê buốt. Đội ngũ bác sĩ sẽ tư vấn phương án điều trị tốt nhất cho bạn.</p>
+              <button className="btn btn-primary">Liên hệ ngay &rarr;</button>
             </div>
             <img src={ctaImg} alt="Dental Team" className="cta-image" />
           </div>

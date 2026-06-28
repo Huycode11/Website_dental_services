@@ -4,7 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>client</title>
+    <title>Dentivo - Hệ Thống Đặt Lịch Khám Nha Khoa</title>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        document.body.innerHTML = '<div style="color:red;padding:20px;font-family:monospace;z-index:9999;position:absolute;background:white;width:100%;height:100%;top:0;left:0;">' + 
+          '<h3>Error: ' + message + '</h3>' + 
+          '<p>' + source + ':' + lineno + ':' + colno + '</p>' + 
+          '<pre>' + (error && error.stack ? error.stack : '') + '</pre>' + 
+          '</div>';
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>

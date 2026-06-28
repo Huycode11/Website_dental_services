@@ -39,14 +39,22 @@ public class AppointmentRepository {
     public List<Appointment> findByPatientIdOrderByCreatedAtDesc(String patientId) {
         return appointmentTable.scan().items().stream()
                 .filter(a -> patientId.equals(a.getPatientId()))
-                .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
+                .sorted((a1, a2) -> {
+                    String d1 = a1.getCreatedAt() != null ? a1.getCreatedAt() : "";
+                    String d2 = a2.getCreatedAt() != null ? a2.getCreatedAt() : "";
+                    return d2.compareTo(d1);
+                })
                 .collect(Collectors.toList());
     }
 
     public List<Appointment> findByDoctorIdOrderByCreatedAtDesc(String doctorId) {
         return appointmentTable.scan().items().stream()
                 .filter(a -> doctorId.equals(a.getDoctorId()))
-                .sorted((a1, a2) -> a2.getCreatedAt().compareTo(a1.getCreatedAt()))
+                .sorted((a1, a2) -> {
+                    String d1 = a1.getCreatedAt() != null ? a1.getCreatedAt() : "";
+                    String d2 = a2.getCreatedAt() != null ? a2.getCreatedAt() : "";
+                    return d2.compareTo(d1);
+                })
                 .collect(Collectors.toList());
     }
 

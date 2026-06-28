@@ -11,6 +11,7 @@ import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.ses.SesClient;
+import software.amazon.awssdk.services.sesv2.SesV2Client;
 
 @Configuration
 public class AwsConfig {
@@ -56,6 +57,14 @@ public class AwsConfig {
     @Bean
     public SesClient sesClient(AwsCredentialsProvider credentialsProvider) {
         return SesClient.builder()
+                .region(Region.of(region))
+                .credentialsProvider(credentialsProvider)
+                .build();
+    }
+
+    @Bean
+    public SesV2Client sesV2Client(AwsCredentialsProvider credentialsProvider) {
+        return SesV2Client.builder()
                 .region(Region.of(region))
                 .credentialsProvider(credentialsProvider)
                 .build();

@@ -22,7 +22,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Danh mục dịch vụ', path: '/admin/categories', icon: <Activity size={20} /> },
     { name: 'Phòng khám', path: '/admin/clinics', icon: <Building size={20} /> },
     { name: 'Chuyên khoa', path: '/admin/specialties', icon: <BookOpen size={20} /> },
-    { name: 'Phê duyệt lịch hẹn', path: '/admin/appointments', icon: <CheckCircle size={20} /> },
+    { name: 'Quản lý lịch hẹn', path: '/admin/registrations', icon: <Calendar size={20} /> },
+    { name: 'Người dùng', path: '/admin/users', icon: <Users size={20} /> },
   ];
 
   return (

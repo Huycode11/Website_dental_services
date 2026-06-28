@@ -49,29 +49,29 @@ export default function ForgotPasswordPage() {
     }
 
     if (newPassword !== confirmPassword) {
-      setError('Passwords do not match.');
+      setError('Mật khẩu không khớp.');
       return;
     }
 
     // Client-side validation for password complexity
     if (newPassword.length < 8) {
-      setError('Password must be at least 8 characters long.');
+      setError('Mật khẩu phải dài ít nhất 8 ký tự.');
       return;
     }
     if (!/.*[A-Z].*/.test(newPassword)) {
-      setError('Password must contain at least one uppercase letter.');
+      setError('Mật khẩu phải chứa ít nhất 1 chữ hoa.');
       return;
     }
     if (!/.*[0-9].*/.test(newPassword)) {
-      setError('Password must contain at least one number.');
+      setError('Mật khẩu phải chứa ít nhất 1 số.');
       return;
     }
     if (!/.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?].*/.test(newPassword)) {
-      setError('Password must contain at least one special character.');
+      setError('Mật khẩu phải chứa ít nhất 1 ký tự đặc biệt.');
       return;
     }
     if (!/^[\x21-\x7E]+$/.test(newPassword)) {
-      setError('Password must not contain spaces or accented characters.');
+      setError('Mật khẩu không được chứa khoảng trắng hoặc có dấu.');
       return;
     }
 
@@ -82,10 +82,10 @@ export default function ForgotPasswordPage() {
         otp, 
         newPassword 
       });
-      setSuccess('Your password has been reset successfully.');
+      setSuccess('Đã đặt lại mật khẩu thành công.');
       setTimeout(() => navigate('/login'), 2000);
     } catch (err: any) {
-      setError(err.response?.data?.message || err.response?.data || 'Failed to reset password.');
+      setError(err.response?.data?.message || err.response?.data || 'Đã có lỗi xảy ra.');
     } finally {
       setLoading(false);
     }
@@ -103,9 +103,9 @@ export default function ForgotPasswordPage() {
           }}>
             <Send color="#ffffff" size={28} style={{ marginLeft: '-2px', marginTop: '2px' }} />
           </div>
-          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '10px' }}>Forgot password?</h2>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937', marginBottom: '10px' }}>Quên mật khẩu?</h2>
           <p style={{ color: '#6b7280', fontSize: '15px' }}>
-            {step === 1 ? "No worries, we'll send you reset instructions." : "Enter your OTP and new password."}
+            {step === 1 ? "Nhập email của bạn để nhận mã xác nhận." : "Nhập mã OTP và mật khẩu mới."}
           </p>
         </div>
 
@@ -115,12 +115,12 @@ export default function ForgotPasswordPage() {
         {step === 1 ? (
           <form className="login-form" onSubmit={handleSendOtp}>
             <div className="form-group" style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Email Address</label>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Địa chỉ Email</label>
               <div className="input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <Mail className="input-icon" size={20} style={{ position: 'absolute', left: '14px', color: '#9ca3af' }} />
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  placeholder="Nhập email của bạn"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={loading}
@@ -143,18 +143,18 @@ export default function ForgotPasswordPage() {
               transition: 'background-color 0.2s', marginBottom: '24px',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
             }}>
-              {loading ? <><Loader2 className="spinner" size={20} /> Processing...</> : 'Send Reset Link'}
+              {loading ? <><Loader2 className="spinner" size={20} /> Đang xử lý...</> : 'Gửi mã xác nhận'}
             </button>
           </form>
         ) : (
           <form className="login-form" onSubmit={handleResetPassword}>
             <div className="form-group" style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>OTP Code</label>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Mã OTP</label>
               <div className="input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <KeyRound className="input-icon" size={20} style={{ position: 'absolute', left: '14px', color: '#9ca3af' }} />
                 <input
                   type="text"
-                  placeholder="Enter 6-digit code"
+                  placeholder="Nhập mã 6 số"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   disabled={loading}
@@ -172,12 +172,12 @@ export default function ForgotPasswordPage() {
             </div>
 
             <div className="form-group" style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>New Password</label>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Mật khẩu mới</label>
               <div className="input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <Lock className="input-icon" size={20} style={{ position: 'absolute', left: '14px', color: '#9ca3af' }} />
                 <input
                   type="password"
-                  placeholder="Enter new password"
+                  placeholder="Nhập mật khẩu mới"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   disabled={loading}
@@ -209,12 +209,12 @@ export default function ForgotPasswordPage() {
             </div>
 
             <div className="form-group" style={{ marginBottom: '24px' }}>
-              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Confirm Password</label>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: '#374151', marginBottom: '8px' }}>Xác nhận mật khẩu</label>
               <div className="input-wrapper" style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                 <Lock className="input-icon" size={20} style={{ position: 'absolute', left: '14px', color: '#9ca3af' }} />
                 <input
                   type="password"
-                  placeholder="Confirm new password"
+                  placeholder="Nhập lại mật khẩu mới"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   disabled={loading}
@@ -237,14 +237,14 @@ export default function ForgotPasswordPage() {
               transition: 'background-color 0.2s', marginBottom: '24px',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
             }}>
-              {loading ? <><Loader2 className="spinner" size={20} /> Processing...</> : 'Reset Password'}
+              {loading ? <><Loader2 className="spinner" size={20} /> Đang xử lý...</> : 'Đặt lại mật khẩu'}
             </button>
           </form>
         )}
 
         <div className="login-footer" style={{ textAlign: 'center' }}>
           <button onClick={() => navigate('/login')} style={{ background: 'none', border: 'none', color: 'var(--primary-color)', cursor: 'pointer', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '15px' }}>
-            <ArrowLeft size={16} /> Back to Login
+            <ArrowLeft size={16} /> Quay lại Đăng nhập
           </button>
         </div>
       </div>
