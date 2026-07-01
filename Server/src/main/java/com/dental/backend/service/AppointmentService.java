@@ -81,7 +81,7 @@ public class AppointmentService {
             // Run asynchronously to not block the response
             new Thread(() -> {
                 try {
-                    emailService.sendBookingConfirmationEmail(request.getPatientId(), request.getDate(), finalStartTime);
+                    emailService.sendBookingReceivedEmail(request.getPatientId(), request.getDate(), finalStartTime);
                 } catch (Exception e) {
                     // Logged in EmailService
                 }
@@ -176,26 +176,31 @@ public class AppointmentService {
         }
 
         appointment.setDoctorId(doctorId);
-        appointment.setStatus("ASSIGNED");
+        appointment.setStatus("CONFIRMED");
         appointmentRepository.save(appointment);
 
-        // Send email notification to doctor asynchronously
+        // Send email notification to doctor and patient asynchronously
         final String finalAppDate = appDate;
         final String finalSTime = sTime;
         new Thread(() -> {
             try {
+                // 1. Send email to Patient
+                String patientEmail = appointment.getPatientId();
+                if (patientEmail != null && patientEmail.contains("@")) {
+                    emailService.sendBookingConfirmationEmail(patientEmail, finalAppDate, finalSTime);
+                }
+
+                // 2. Send email to Doctor
                 doctorRepository.findById(doctorId).ifPresent(doctor -> {
                     userRepository.findById(doctor.getUserId()).ifPresent(user -> {
                         String doctorEmail = user.getEmail();
                         if (doctorEmail != null && doctorEmail.contains("@")) {
-                            String patientName = appointment.getPatientId();
-                            if (patientName != null && patientName.contains("@")) {
-                                // Attempt to find patient's name if they exist
-                                userRepository.findByEmail(patientName).ifPresent(patient -> {
+                            if (patientEmail != null && patientEmail.contains("@")) {
+                                userRepository.findByEmail(patientEmail).ifPresent(patient -> {
                                     emailService.sendDoctorNotificationEmail(doctorEmail, patient.getFullName(), finalAppDate, finalSTime);
                                 });
                             } else {
-                                emailService.sendDoctorNotificationEmail(doctorEmail, patientName != null ? patientName : "Khách", finalAppDate, finalSTime);
+                                emailService.sendDoctorNotificationEmail(doctorEmail, patientEmail != null ? patientEmail : "Khách", finalAppDate, finalSTime);
                             }
                         }
                     });
@@ -242,6 +247,50 @@ public class AppointmentService {
             appointment.setCancelReason(cancelReason);
         }
 
+        appointmentRepository.save(appointment);
+        
+        // Send email if confirmed by doctor
+        if ("CONFIRMED".equals(status)) {
+            String patientEmail = appointment.getPatientId();
+            if (patientEmail != null && patientEmail.contains("@")) {
+                String appDate = appointment.getAppointmentDate();
+                String sTime = appointment.getStartTime();
+                if (appDate == null || sTime == null) {
+                    String[] parsed = parseScheduleId(appointment.getScheduleId());
+                    appDate = parsed[0];
+                    sTime = parsed[1];
+                }
+                final String finalAppDate = appDate;
+                final String finalSTime = sTime;
+                
+                new Thread(() -> {
+                    try {
+                        emailService.sendBookingConfirmationEmail(patientEmail, finalAppDate, finalSTime);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }).start();
+            }
+        }
+
+        return mapToResponse(appointment);
+    }
+
+    public AppointmentResponse cancelAppointmentByPatient(String id, String patientEmail, String reason) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+        
+        if (!patientEmail.equals(appointment.getPatientId())) {
+             throw new RuntimeException("Bạn không có quyền hủy lịch hẹn này");
+        }
+        
+        if ("COMPLETED".equals(appointment.getStatus()) || "CANCELLED".equals(appointment.getStatus())) {
+             throw new RuntimeException("Lịch hẹn này không thể hủy");
+        }
+
+        appointment.setStatus("CANCELLED");
+        appointment.setCancelReason(reason != null && !reason.trim().isEmpty() ? reason : "Hủy bởi bệnh nhân");
+        
         appointmentRepository.save(appointment);
         return mapToResponse(appointment);
     }
@@ -378,6 +427,21 @@ public class AppointmentService {
             }
         }
 
+        String doctorName = null;
+        if (appointment.getDoctorId() != null && !appointment.getDoctorId().equals("UNASSIGNED")) {
+            try {
+                Doctor doc = doctorRepository.findById(appointment.getDoctorId()).orElse(null);
+                if (doc != null) {
+                    User userDoc = userRepository.findById(doc.getUserId()).orElse(null);
+                    if (userDoc != null) {
+                        doctorName = userDoc.getFullName();
+                    }
+                }
+            } catch (Exception e) {
+                // Ignore lookup errors
+            }
+        }
+
         return AppointmentResponse.builder()
                 .id(appointment.getId())
                 .patientId(appointment.getPatientId())
@@ -392,6 +456,7 @@ public class AppointmentService {
                 .time(time)
                 .patientName(patientName)
                 .patientAvatar(patientAvatar)
+                .doctorName(doctorName)
                 .clinicId(appointment.getClinicId())
                 .clinicName(clinicName)
                 .build();

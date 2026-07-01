@@ -22,5 +22,6 @@ public class AppointmentResponse {
     private String time;
     private String patientName;
     private String patientAvatar;
+    private String doctorName;
     private String clinicName;
 }

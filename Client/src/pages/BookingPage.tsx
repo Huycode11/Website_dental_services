@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Stethoscope, User as UserIcon, CheckCircle2, Eye, EyeOff, Mail, Lock, User as UserFullIcon } from 'lucide-react';
 import Layout from '../components/layout/Layout';
@@ -27,12 +27,14 @@ interface Service {
 
 export default function BookingPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
 
   // Data state
   const [clinics, setClinics] = useState<Clinic[]>([]);
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
   const [services, setServices] = useState<Service[]>([]);
+  const [doctors, setDoctors] = useState<any[]>([]);
 
   // Selection state
   const [selectedClinic, setSelectedClinic] = useState<string>('');
@@ -41,6 +43,7 @@ export default function BookingPage() {
   const [selectedService, setSelectedService] = useState<string>('');
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedDoctorId] = useState<string>(location.state?.selectedDoctorId || '');
 
   const clinicsPerPage = 6;
   const totalClinicPages = Math.ceil(clinics.length / clinicsPerPage);
@@ -72,18 +75,33 @@ export default function BookingPage() {
 
   const fetchData = async () => {
     try {
-      const [clinicRes, specRes, servRes] = await Promise.all([
+      const [clinicRes, specRes, servRes, docRes] = await Promise.all([
         axios.get(`${API_BASE_URL}/clinics`),
         axios.get(`${API_BASE_URL}/specialties`),
-        axios.get(`${API_BASE_URL}/services`)
+        axios.get(`${API_BASE_URL}/services`),
+        axios.get(`${API_BASE_URL}/doctors`)
       ]);
       setClinics(clinicRes.data);
       setSpecialties(specRes.data);
       setServices(servRes.data);
+      setDoctors(docRes.data);
     } catch (error) {
       console.error('Error fetching data for booking:', error);
     }
   };
+
+  // Auto-select specialty if a doctor is pre-selected
+  useEffect(() => {
+    if (selectedDoctorId && doctors.length > 0 && specialties.length > 0) {
+      const doctor = doctors.find(d => d.id === selectedDoctorId);
+      if (doctor && doctor.specialty) {
+        const specMatch = specialties.find(s => s.name === doctor.specialty || s.id === doctor.specialty);
+        if (specMatch && selectedSpecialty !== specMatch.id) {
+          setSelectedSpecialty(specMatch.id);
+        }
+      }
+    }
+  }, [selectedDoctorId, doctors, specialties, selectedSpecialty]);
 
   const getFilteredServices = () => {
     if (!selectedSpecialty) return [];
@@ -127,6 +145,7 @@ export default function BookingPage() {
         serviceId: selectedService,
         date: selectedDate,
         time: selectedTime,
+        doctorId: selectedDoctorId || undefined,
         notes: notes
       };
 
@@ -577,23 +596,34 @@ export default function BookingPage() {
 
               {step === 1 && (
                 <>
+                  {/* Selected Doctor */}
+                  {selectedDoctorId && doctors.find(d => d.id === selectedDoctorId) && (
+                    <div style={{ padding: '15px', backgroundColor: '#e0f2fe', borderRadius: '8px', border: '1px solid #bae6fd', marginBottom: '20px' }}>
+                      <p style={{ margin: 0, color: '#0369a1', fontWeight: 600 }}>
+                        👨‍⚕️ Đang đặt lịch khám với Bác sĩ: <span style={{fontSize: '16px'}}>{doctors.find(d => d.id === selectedDoctorId)?.fullName}</span>
+                      </p>
+                    </div>
+                  )}
+
                   {/* Specialty */}
-                  <div>
-                    <label style={styles.label}>Chuyên khoa <span style={{ color: 'red' }}>*</span></label>
-                    <select
-                      style={styles.select}
-                      value={selectedSpecialty}
-                      onChange={(e) => {
-                        setSelectedSpecialty(e.target.value);
-                        setSelectedService('');
-                      }}
-                    >
-                      <option value="">Chọn chuyên khoa</option>
-                      {specialties.map(spec => (
-                        <option key={spec.id} value={spec.id}>{spec.name}</option>
-                      ))}
-                    </select>
-                  </div>
+                  {!selectedDoctorId && (
+                    <div>
+                      <label style={styles.label}>Chuyên khoa <span style={{ color: 'red' }}>*</span></label>
+                      <select
+                        style={styles.select}
+                        value={selectedSpecialty}
+                        onChange={(e) => {
+                          setSelectedSpecialty(e.target.value);
+                          setSelectedService('');
+                        }}
+                      >
+                        <option value="">Chọn chuyên khoa</option>
+                        {specialties.map(spec => (
+                          <option key={spec.id} value={spec.id}>{spec.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
 
                   {/* Service */}
                   <div>

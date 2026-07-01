@@ -34,6 +34,27 @@ public class AppointmentController {
         return new ResponseEntity<>(appointmentService.createAppointment(request), HttpStatus.CREATED);
     }
 
+    @GetMapping("/appointments/my-appointments")
+    public ResponseEntity<java.util.List<AppointmentResponse>> getMyAppointments(Authentication authentication) {
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+            return ResponseEntity.ok(appointmentService.getAppointmentsByPatientId(email));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
+    @PutMapping("/appointments/my-appointments/{id}/cancel")
+    public ResponseEntity<AppointmentResponse> cancelMyAppointment(
+            @PathVariable String id,
+            @RequestParam(required = false) String reason,
+            Authentication authentication) {
+        if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
+            String email = ((UserDetails) authentication.getPrincipal()).getUsername();
+            return ResponseEntity.ok(appointmentService.cancelAppointmentByPatient(id, email, reason));
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    }
+
     // --- Admin Endpoints ---
 
     @GetMapping("/admin/appointments")

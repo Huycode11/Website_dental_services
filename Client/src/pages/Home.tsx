@@ -22,8 +22,6 @@ import weTreatment from '../img/We-Treatment.webp';
 
 import doctor2 from '../img/Doctor-2.webp';
 import doctor3 from '../img/Doctor-3.webp';
-import doctor5 from '../img/Doctor-5.webp';
-import doctor6 from '../img/Doctor-6.webp';
 import ctaImg from '../img/CTA-IMG.webp';
 
 import blog2 from '../img/Blog-2.webp';
@@ -289,6 +287,13 @@ export default function Home() {
                   </div>
                   <h3>{doc.fullName}</h3>
                   <p>{doc.specialty}</p>
+                  <button 
+                    onClick={() => navigate('/booking', { state: { selectedDoctorId: doc.id } })}
+                    className="btn btn-primary" 
+                    style={{marginTop: '15px', padding: '8px 16px', fontSize: '14px', width: '100%', borderRadius: 'var(--radius-md)'}}
+                  >
+                    Đặt lịch
+                  </button>
                 </div>
               </Reveal>
             )) : (

@@ -9,6 +9,7 @@ import SettingsPage from './pages/SettingsPage';
 import DoctorDashboard from './pages/DoctorDashboard';
 import DoctorAppointmentsPage from './pages/DoctorAppointmentsPage';
 import BookingPage from './pages/BookingPage';
+import MyAppointmentsPage from './pages/MyAppointmentsPage';
 import AdminLayout from './components/admin/AdminLayout';
 import AdminDashboardPage from './pages/admin/AdminDashboardPage';
 import AdminDoctorsPage from './pages/admin/AdminDoctorsPage';
@@ -44,6 +45,7 @@ export default function App() {
         <Route path="/doctor-dashboard" element={<DoctorDashboard />} />
         <Route path="/doctor-appointments" element={<DoctorAppointmentsPage />} />
         <Route path="/booking" element={<BookingPage />} />
+        <Route path="/my-appointments" element={<MyAppointmentsPage />} />
         
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminLayout><AdminDashboardPage /></AdminLayout>} />

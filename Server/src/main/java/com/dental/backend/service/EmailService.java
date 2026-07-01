@@ -75,6 +75,51 @@ public class EmailService {
         }
     }
 
+    public void sendBookingReceivedEmail(String toEmail, String appointmentDate, String timeSlot) {
+        String subject = "Tiếp nhận lịch hẹn - Dentivo";
+        String htmlBody = "<div style=\"font-family: 'Inter', Arial, sans-serif; background-color: #f3f4f6; padding: 40px 0; margin: 0;\">"
+                + "<div style=\"max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);\">"
+                + "<div style=\"background-color: #0d9488; padding: 24px; text-align: center;\">"
+                + "<h1 style=\"color: #ffffff; margin: 0; font-size: 28px; font-weight: bold; letter-spacing: 2px;\">DENTIVO</h1>"
+                + "</div>"
+                + "<div style=\"padding: 32px; color: #374151; line-height: 1.6;\">"
+                + "<h2 style=\"color: #111827; margin-top: 0; font-size: 20px;\">Tiếp nhận lịch hẹn</h2>"
+                + "<p style=\"font-size: 16px;\">Xin chào,</p>"
+                + "<p style=\"font-size: 16px;\">Hệ thống đã tiếp nhận lịch hẹn của bạn và <strong>đang chờ xác nhận</strong> từ phòng khám. Dưới đây là thông tin lịch hẹn:</p>"
+                + "<div style=\"background-color: #f8fafc; border-left: 4px solid #f59e0b; padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0;\">"
+                + "<p style=\"margin: 0 0 8px 0; font-size: 16px;\"><strong style=\"color: #475569;\">📅 Ngày khám:</strong> <span style=\"color: #b45309; font-weight: 600;\">" + appointmentDate + "</span></p>"
+                + "<p style=\"margin: 0; font-size: 16px;\"><strong style=\"color: #475569;\">⏰ Giờ khám:</strong> <span style=\"color: #b45309; font-weight: 600;\">" + timeSlot + "</span></p>"
+                + "</div>"
+                + "<p style=\"font-size: 16px;\">Phòng khám sẽ liên hệ hoặc gửi email xác nhận cho bạn trong thời gian sớm nhất.</p>"
+                + "<p style=\"font-size: 16px; margin-top: 32px;\">Trân trọng,<br><strong style=\"color: #0d9488;\">Đội ngũ Dentivo</strong></p>"
+                + "</div>"
+                + "<div style=\"background-color: #f9fafb; padding: 20px; text-align: center; color: #6b7280; font-size: 13px; border-top: 1px solid #e5e7eb;\">"
+                + "<p style=\"margin: 0;\">Nha khoa Dentivo - Nụ cười của bạn là niềm vui của chúng tôi</p>"
+                + "</div>"
+                + "</div>"
+                + "</div>";
+
+        try {
+            SendEmailRequest request = SendEmailRequest.builder()
+                    .fromEmailAddress(awsSesSenderEmail)
+                    .destination(Destination.builder().toAddresses(toEmail).build())
+                    .content(EmailContent.builder()
+                            .simple(Message.builder()
+                                    .subject(Content.builder().data(subject).charset("UTF-8").build())
+                                    .body(Body.builder()
+                                            .html(Content.builder().data(htmlBody).charset("UTF-8").build())
+                                            .build())
+                                    .build())
+                            .build())
+                    .build();
+
+            sesV2Client.sendEmail(request);
+            log.info("Booking received email sent via AWS SES to {}", toEmail);
+        } catch (Exception e) {
+            log.error("Failed to send booking received email to {}: {}", toEmail, e.getMessage());
+        }
+    }
+
     public void sendBookingConfirmationEmail(String toEmail, String appointmentDate, String timeSlot) {
         String subject = "Xác nhận đặt lịch khám - Dentivo";
         String htmlBody = "<div style=\"font-family: 'Inter', Arial, sans-serif; background-color: #f3f4f6; padding: 40px 0; margin: 0;\">"

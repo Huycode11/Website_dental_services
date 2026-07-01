@@ -1,8 +1,14 @@
-import { User, LogOut, ChevronDown, Settings, LayoutDashboard } from 'lucide-react';
+import { User, LogOut, ChevronDown, Settings, LayoutDashboard, Calendar, ChevronRight } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import logo from '../../img/Dentivo_logo.png';
+
+interface Service {
+  id: string;
+  category: string;
+  name: string;
+}
 
 interface HeaderProps {
   token: string | null;
@@ -19,8 +25,19 @@ export default function Header({ token, onLogout, minimal = false }: HeaderProps
   const [profileOpen, setProfileOpen] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(() => localStorage.getItem('avatarUrl'));
   const [userRole, setUserRole] = useState<string | null>(() => localStorage.getItem('role'));
+  const [services, setServices] = useState<Service[]>([]);
+  
   const lastScrollY = useRef(0);
   const profileRef = useRef<HTMLDivElement>(null);
+
+  // Fetch services for the menu
+  useEffect(() => {
+    axios.get('http://localhost:8080/api/services')
+      .then(servRes => {
+        setServices(servRes.data);
+      })
+      .catch(err => console.error('Error fetching services for menu:', err));
+  }, []);
 
   // Sync avatarUrl from localStorage and API
   useEffect(() => {
@@ -115,9 +132,26 @@ export default function Header({ token, onLogout, minimal = false }: HeaderProps
             </div>
             <div className="nav-item dropdown">
               <a href="#services" className="dropdown-toggle">Dịch vụ <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg></a>
-              <div className="dropdown-menu">
-                <a href="#our-services">Các dịch vụ</a>
-                <a href="#service-details">Chi tiết dịch vụ</a>
+              <div className="mega-menu">
+                {services.length > 0 ? (
+                  Array.from(new Set(services.map(s => s.category).filter(Boolean))).map(categoryName => {
+                    const catServices = services.filter(s => s.category === categoryName);
+                    return (
+                      <div className="mega-menu-column" key={categoryName}>
+                        <div className="mega-menu-title">{categoryName}</div>
+                        {catServices.map(srv => (
+                          <a key={srv.id} href={`#service-${srv.id}`}>{srv.name}</a>
+                        ))}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="mega-menu-column">
+                    <div className="mega-menu-title">Dịch vụ nha khoa</div>
+                    <a href="#our-services">Các dịch vụ</a>
+                    <a href="#service-details">Chi tiết dịch vụ</a>
+                  </div>
+                )}
               </div>
             </div>
             <div className="nav-item dropdown">
@@ -194,6 +228,9 @@ export default function Header({ token, onLogout, minimal = false }: HeaderProps
                 }}
               >
                 <button onClick={() => { setProfileOpen(false); navigate('/profile'); }}><User size={16} /> Hồ sơ</button>
+                {(!userRole || userRole === 'USER' || userRole === 'PATIENT') && (
+                  <button onClick={() => { setProfileOpen(false); navigate('/my-appointments'); }}><Calendar size={16} /> Lịch sử đặt khám</button>
+                )}
                 <button onClick={() => { setProfileOpen(false); navigate('/settings'); }}><Settings size={16} /> Cài đặt</button>
                 {userRole === 'DOCTOR' && (
                   <button onClick={() => { setProfileOpen(false); navigate('/doctor-dashboard'); }}>
